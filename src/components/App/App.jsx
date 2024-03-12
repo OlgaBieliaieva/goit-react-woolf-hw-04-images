@@ -13,14 +13,11 @@ export default function App() {
   useEffect(() => {
     if (query.length > 0) {
       getImages(query, page).then(res => {
-        setImages([...images, ...res.data.hits]);
+        setImages(prevImgs => [...prevImgs, ...res.data.hits]);
         setIsPending(false);
-        setIsDisabled(
-          images.length + res.data.hits.length === res.data.totalHits
-        );
+        setIsDisabled(!(page < Math.ceil(res.data.totalHits / 12)));
       });
     }
-    // eslint-disable-next-line
   }, [query, page]);
 
   const handleFormSubmit = query => {
