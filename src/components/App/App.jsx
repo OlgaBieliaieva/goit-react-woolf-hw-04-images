@@ -20,6 +20,7 @@ export default function App() {
         );
       });
     }
+    // eslint-disable-next-line
   }, [query, page]);
 
   const handleFormSubmit = query => {
