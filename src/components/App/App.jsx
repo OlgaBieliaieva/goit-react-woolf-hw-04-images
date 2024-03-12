@@ -1,58 +1,48 @@
-import React, { Component } from 'react';
+import { useState, useEffect } from 'react';
 import Searchbar from '../Searchbar/Searchbar';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import getImages from 'services/api';
 
-class App extends Component {
-  state = {
-    query: '',
-    images: [],
-    page: 1,
-    status: '',
-    disabled: true,
-  };
+export default function App() {
+  const [images, setImages] = useState([]);
+  const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [isPending, setIsPending] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true);
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.query !== this.state.query ||
-      prevState.page !== this.state.page
-    ) {
-      getImages(this.state.query, this.state.page).then(res => {
-        this.setState({
-          images: [...this.state.images, ...res.data.hits],
-          status: '',
-          disabled:
-            this.state.images.length + res.data.hits.length ===
-            res.data.totalHits,
-        });
+  useEffect(() => {
+    if (query.length > 0) {
+      getImages(query, page).then(res => {
+        setImages([...images, ...res.data.hits]);
+        setIsPending(false);
+        setIsDisabled(
+          images.length + res.data.hits.length === res.data.totalHits
+        );
       });
     }
-  }
+  }, [query, page]);
 
-  handleFormSubmit = query => {
-    this.setState({ query: query, images: [], page: 1, status: 'pending' });
+  const handleFormSubmit = query => {
+    setImages([]);
+    setQuery(query);
+    setPage(1);
+    setIsPending(true);
   };
 
-  handleChangePage = e => {
-    this.setState(prevState => {
-      return { page: prevState.page + 1 };
-    });
+  const handleChangePage = () => {
+    setPage(page + 1);
   };
 
-  render() {
-    return (
-      <main>
-        <Searchbar onSubmit={this.handleFormSubmit} />
-        <ImageGallery
-          images={this.state.images}
-          page={this.state.page}
-          onChangePage={this.handleChangePage}
-          status={this.state.status}
-          disabled={this.state.disabled}
-        />
-      </main>
-    );
-  }
+  return (
+    <main>
+      <Searchbar onSubmit={handleFormSubmit} />
+      <ImageGallery
+        images={images}
+        page={page}
+        onChangePage={handleChangePage}
+        status={isPending}
+        disabled={isDisabled}
+      />
+    </main>
+  );
 }
-
-export default App;

@@ -1,6 +1,6 @@
 import css from './ImageGalleryItem.module.css';
 
-function ImageGalleryItem({ image, showModal }) {
+export default function ImageGalleryItem({ image, showModal }) {
   return (
     <li className={css.ImageGalleryItem}>
       <img
@@ -12,5 +12,3 @@ function ImageGalleryItem({ image, showModal }) {
     </li>
   );
 }
-
-export default ImageGalleryItem;

@@ -1,7 +1,7 @@
 import css from './Loader.module.css';
 import { Bars } from 'react-loader-spinner';
 
-function Loader() {
+export default function Loader() {
   return (
     <div className={css.loader}>
       <Bars
@@ -16,4 +16,3 @@ function Loader() {
     </div>
   );
 }
-export default Loader;
